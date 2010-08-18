@@ -1,0 +1,21 @@
+# DOES NOT WORK!!
+# Simply copy the command!!
+#--------------------------------------------------
+# # rsync Fotos Dir from Mac to External HDD
+# 
+# RSYNC=$(which rsync)
+# 
+# SRC="/Users/krid/Pictures"
+# 
+# DST="/Volumes/WD Passport/Pictures/"
+# 
+# EXCLUDE=".DS_STORE .*.swp"
+# 
+# cd "$SRC"
+# 
+# # rsync --recursive --update --exclude='.DS_Store' --exclude='.*.swp' --stats --progress --size-only --relative -n . /Volumes/WD\ Passport/Pictures/Fotos/
+# $RSYNC --recursive --update --exclude="$EXCLUDE" --stats --progress --size-only --relative -n "$SRC"/Fotos "$DST"
+# 
+# # vim: filetype=sh
+#-------------------------------------------------- 
+# jhead -n%Y-%m-%d-%H%M%S *.JPG
