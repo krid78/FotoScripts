@@ -11,10 +11,12 @@ pushd ${BASEDIR}
 BASEDIR=${PWD}
 popd
 
-FILELIST=$(gfind ${BASEDIR} -iname 'CIMG*.JPG')
+FILENAME=${2:-CIMG*.JPG}
+
+FILELIST=$(gfind ${BASEDIR} -iname "${FILENAME}")
 
 for i in ${FILELIST}; do
-	jhead -nf'%Y-%m-%d-%H%M%S' $i
+	jhead -nf'%Y%m%d-%f' $i
 done
 
 # vim: ts=2:sw=2:tw=80:fileformat=unix

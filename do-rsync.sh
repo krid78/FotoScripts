@@ -3,10 +3,12 @@
 # Author(s)     :  Daniel Kriesten
 # Email         :  daniel.kriesten@etit.tu-chemnitz.de
 # Creation Date :  Mi 04 Nov 2009 10:52:30 #u
-# Last Modified :  <Fr 02 Jul 2010 14:20:54 krid>
+# Last Modified :  <Mi 18 Aug 2010 21:16:17 krid>
 #
 # do recursive rsync from $1 to $2 excluding $3 (and some defaults)
 ########################################################################
+# cd /Users/krid/Pictures/iPhoto\ Library
+# bash /Users/krid/Pictures/Fotos_JMT/Scripts/do-rsync.sh ./Originals/ /Users/krid/Pictures/ImportedFotos/iPhoto\ Library/
 
 # DEBUG
 # set -x

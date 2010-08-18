@@ -8,9 +8,9 @@ function createFilelist ()
 {
 	SORTLIST=""
 	FILELIST=""
-	SORTLIST=$(gfind ${BASEDIR} -iname "${1}" | xargs basename | sort -u)
+	SORTLIST=$(gfind "${BASEDIR}" -iname "${1}" | xargs basename | sort -u)
 	for i in ${SORTLIST}; do
-		FILELIST="${FILELIST} $(gfind ${BASEDIR} -name ${i})"
+		FILELIST="${FILELIST} $(gfind "${BASEDIR}" -name ${i})"
 	done
 }
 
@@ -67,8 +67,9 @@ function sortToFolder ()
 			SUBCNT="_${SUBCNT}"
 		fi
 
-		#mv -iv ${i} ${DIRNAME}/${FILE}${SUBCNT}
-		cp -iv ${i} ${DIRNAME}/${FILE}${SUBCNT}
+		#mv -iv "${i}" "${DIRNAME}/${FILE}${SUBCNT}"
+		cp -iv "${i}" "${DIRNAME}/${FILE}${SUBCNT}"
+		#jhead -nf'%Y%m%d-%f' "${DIRNAME}/${FILE}${SUBCNT}"
 
 		SUBCNT=""
 	done
