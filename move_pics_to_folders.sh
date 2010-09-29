@@ -6,7 +6,8 @@
 
 function createFilelist ()
 {
-	SORTLIST=""
+	local SORTLIST=""
+	local i
 	FILELIST=""
 	SORTLIST=$(gfind "${BASEDIR}" -iname "${1}" | xargs basename | sort -u)
 	for i in ${SORTLIST}; do
@@ -53,9 +54,11 @@ function getDirNameByEvent ()
 
 function sortToFolder ()
 {
+	local i
 	for i in ${FILELIST}; do
 		#getDirNameByEvent $(dirname ${i})
 		getDirNameByExif ${i}
+
 		FILE="$(basename ${i})"
 
 		mkdir -p ${DIRNAME}
@@ -67,8 +70,11 @@ function sortToFolder ()
 			SUBCNT="_${SUBCNT}"
 		fi
 
-		#mv -iv "${i}" "${DIRNAME}/${FILE}${SUBCNT}"
-		cp -iv "${i}" "${DIRNAME}/${FILE}${SUBCNT}"
+		for x in ${i%.*}.*; do
+			mv -iv "${x}" "${DIRNAME}/$(basename ${x})${SUBCNT}"
+		done
+		#echo mv -iv "${i}" "${DIRNAME}/${FILE}${SUBCNT}"
+		#cp -iv "${i}" "${DIRNAME}/${FILE}${SUBCNT}"
 		#jhead -nf'%Y%m%d-%f' "${DIRNAME}/${FILE}${SUBCNT}"
 
 		SUBCNT=""
