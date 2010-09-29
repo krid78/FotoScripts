@@ -16,7 +16,14 @@ FILENAME=${2:-CIMG*.JPG}
 FILELIST=$(gfind ${BASEDIR} -iname "${FILENAME}")
 
 for i in ${FILELIST}; do
-	jhead -nf'%Y%m%d-%f' $i
+	OLDNAME=$(basename $i)
+	#jhead -nf'%Y%m%d-%f' $i
+	NEWNAME=$(basename $(jhead -nf'%Y%m%d-%f' $i | cut -d ' ' -f3))
+	for x in ${BASEDIR}/${OLDNAME%.*}.*; do
+		if [[ -f $x ]]; then
+			mv -iv $x ${BASEDIR}/${NEWNAME%.*}.${x#*.}
+		fi
+	done
 done
 
 # vim: ts=2:sw=2:tw=80:fileformat=unix
