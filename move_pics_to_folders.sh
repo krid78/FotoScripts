@@ -62,17 +62,24 @@ function sortToFolder ()
 		FILE="$(basename ${i})"
 
 		mkdir -p ${DIRNAME}
-		if [ -e "${DIRNAME}/${FILE}" ]; then
-			SUBCNT=1
-			while ( [ -e "${DIRNAME}/${FILE}_${SUBCNT}" ] ); do
-				let SUBCNT=SUBCNT+1
-			done
-			SUBCNT="_${SUBCNT}"
-		fi
+		# Durchsuche Zielverzeichnis nach Duplikaten
+		# und zähle diese mit.
+		#if [ -e "${DIRNAME}/${FILE}" ]; then
+			#SUBCNT=1
+			#while ( [ -e "${DIRNAME}/${FILE}_${SUBCNT}" ] ); do
+				#let SUBCNT=SUBCNT+1
+			#done
+			#SUBCNT="_${SUBCNT}"
+		#fi
 
-		for x in ${i%.*}.*; do
-			mv -iv "${x}" "${DIRNAME}/$(basename ${x})${SUBCNT}"
-		done
+		# Neu: Ignoriere Duplikate!
+		if [[ -e "${DIRNAME}/${FILE}" ]]; then
+			echo "** \"${DIRNAME}/${FILE}\" existiert! **"
+		else
+			for x in ${i%.*}.*; do
+				mv -iv "${x}" "${DIRNAME}/$(basename ${x})${SUBCNT}"
+			done
+		fi
 		#echo mv -iv "${i}" "${DIRNAME}/${FILE}${SUBCNT}"
 		#cp -iv "${i}" "${DIRNAME}/${FILE}${SUBCNT}"
 		#jhead -nf'%Y%m%d-%f' "${DIRNAME}/${FILE}${SUBCNT}"
