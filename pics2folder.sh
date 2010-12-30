@@ -1,76 +1,94 @@
 #!/bin/bash
-# $Id: $
-# Author(s)     :  Daniel Kriesten
-# Email         :  daniel.kriesten@etit.tu-chemnitz.de
-# Creation Date :  Fr 25 Sep 2009 11:13:45 #u
+####################
+# sort pics to folder
 
-#TODO
-# finde eine Lösung, wie du elegant den Namen des Fotos herausbekommst, um so vor dem kopieren zu bestimmen, ob du das musst
-function createFilelist ()
+function getTimeStamp ()
 {
-	local SORTLIST=""
-	local i
-	FILELIST=""
-	SORTLIST=$(gfind "${BASEDIR}" -iname "${1}" |xargs basename |sort -u)
-	for i in ${SORTLIST}; do
-		FILELIST="${FILELIST} $(gfind "${BASEDIR}" -name ${i})"
-	done
+	local date=$(exiv2 -q -Pv -g Exif.Image.DateTime "${1}" |awk '{print $1}'|tr ':' ' ')
+	if [[ "x"$date != "x" ]]; then
+		read YEAR MONTH DAY <<<${date}
+	else
+		echo "No exif data!"
+		YEAR=0000
+		MONTH=00
+		DAY=00
+	fi
 }
 
-function getDirNameByExif ()
+function createFolder ()
 {
-	local TMP="$(exiv2 ${1} |grep Zeitstempel)"
-	TMP="$(echo ${TMP} |cut -d ' ' -f 4 |sed 's/^[ \t]*//;s/[ \t]*$//')"
-	local YEAR="$(echo ${TMP} |cut -d ':' -f 1 |sed 's/^[ \t]*//;s/[ \t]*$//')"
-	local MONTH="$(echo ${TMP} |cut -d ':' -f 2 |sed 's/^[ \t]*//;s/[ \t]*$//')"
-	local DAY="$(echo ${TMP} |cut -d ':' -f 3 |sed 's/^[ \t]*//;s/[ \t]*$//')"
-	#DIRNAME=${TARGETBASE}/${YEAR}/${YEAR}_${MONTH}
-	DIRNAME=${TARGETBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}
-	FILEDATE=${YEAR}${MONTH}${DAY}
+	mkdir -vp "${1}"
 }
 
-function sortToFolder ()
+function copyPicsToFolder ()
 {
 	local i
-	for i in ${FILELIST}; do
-		getDirNameByExif ${i}
-
-		FILE="$(basename ${i})"
-
-		mkdir -p ${DIRNAME}
-
-		# Ignoriere Duplikate!
-		if [[ -e "${DIRNAME}/${FILE}" ]]; then
-			echo "** \"${DIRNAME}/${FILE}\" existiert! **"
-			rm -v ${i%.*}.*
+	local x
+	for i in $(find "${SRCBASE}" -iname "*.${1}"); do
+		local FILENAME=$(basename "${i}")
+		getTimeStamp "${i}";
+		if [[ "x"${YEAR}${MONTH}${DAY} == "x00000000" ]]; then
+			echo "Skipping \"${i}\""
+			continue
+		fi
+		createFolder "${DSTBASE}"/${YEAR}/${YEAR}-${MONTH}-${DAY}
+		if [[ -e "${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${FILENAME}" ]]; then
+			echo "** \"${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${FILENAME}\" existiert! **"
 		else
 			for x in ${i%.*}.*; do
-				#jhead -exonly -nf'%Y%m%d-%f' "${i}" # immer noch nicht das, was ich will
-				mv -iv "${x}" "${DIRNAME}/$(basename ${x})"
+				cp -iv "$x" "${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}"/${YEAR}${MONTH}${DAY}_"${FILENAME}"
 			done
 		fi
-
 	done
 }
 
-BASEDIR=${1:-.}
-pushd ${BASEDIR}
-BASEDIR=${PWD}
-popd
-echo "BASEDIR=${BASEDIR}"
+function movePicsToFolder ()
+{
+	local i
+	local x
+	for i in $(find "${SRCBASE}" -iname "*.${1}"); do
+		local FILENAME=$(basename "${i}")
+		getTimeStamp "${i}";
+		if [[ "x"${YEAR}${MONTH}${DAY} == "x00000000" ]]; then
+			echo "Skipping \"${i}\""
+			continue
+		fi
+		createFolder "${DSTBASE}"/${YEAR}/${YEAR}-${MONTH}-${DAY}
+		if [[ -e "${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${FILENAME}" ]]; then
+			echo "** \"${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${FILENAME}\" existiert! **"
+		else
+			for x in ${i%.*}.*; do
+				mv -iv "$x" "${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}"/${YEAR}${MONTH}${DAY}_"${FILENAME}"
+			done
+		fi
+	done
+}
 
-TARGETBASE=${2:-./FotosNeu}
-pushd ${TARGETBASE}
-TARGETBASE=${PWD}
-popd
-echo "TARGETBASE=${TARGETBASE}"
+SRCBASE=${1:-.}
+if [[ -d ${SRCBASE} ]]; then
+	pushd ${SRCBASE}
+	SRCBASE=${PWD}
+	popd
+	echo "SRCBASE=${SRCBASE}"
+else
+	exit
+fi
+
+DSTBASE=${2:-./Pictures}
+if [[ -d ${DSTBASE} ]]; then
+	pushd ${DSTBASE}
+	DSTBASE=${PWD}
+	popd
+	echo "DSTBASE=${DSTBASE}"
+else
+	exit
+fi
 
 BASEEXT=${3:-jpg}
 echo "BASEEXT=${BASEEXT}"
 
-createFilelist "*.${BASEEXT}"
-sortToFolder
-
+#copyPicsToFolder "${BASEEXT}"
+movePicsToFolder "${BASEEXT}"
 
 # vim: ts=2:sw=2:tw=0:fileformat=unix
 # vim: comments& comments+=b\:# formatoptions& formatoptions+=or
