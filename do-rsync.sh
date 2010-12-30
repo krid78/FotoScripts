@@ -3,7 +3,7 @@
 # Author(s)     :  Daniel Kriesten
 # Email         :  daniel.kriesten@etit.tu-chemnitz.de
 # Creation Date :  Mi 04 Nov 2009 10:52:30 #u
-# Last Modified :  <Mi 18 Aug 2010 21:16:17 krid>
+# Last Modified :  <Mi 08 Dez 2010 22:29:51 krid>
 #
 # do recursive rsync from $1 to $2 excluding $3 (and some defaults)
 ########################################################################
@@ -71,6 +71,7 @@ EXCLUDE_FILE=`"${DATE}" +"/tmp/exclude_%y%m%d%H%M%S.rsync"`
 ._.*
 .*.swp
 iMovie Thumbnails
+iPod Photo Cache
 EOF
 # end exclude list -------------------------------------------------------------
 
