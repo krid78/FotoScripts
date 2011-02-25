@@ -3,7 +3,7 @@
 # Author(s)     :  Daniel Kriesten
 # Email         :  daniel.kriesten@etit.tu-chemnitz.de
 # Creation Date :  Mi 04 Nov 2009 10:52:30 #u
-# Last Modified :  <Mi 08 Dez 2010 22:29:51 krid>
+# Last Modified :  <Di 08 Feb 2011 21:28:56 krid>
 #
 # do recursive rsync from $1 to $2 excluding $3 (and some defaults)
 ########################################################################
@@ -126,6 +126,23 @@ ${DRY_RUN} \
 --exclude-from=\"${EXCLUDE_FILE}\" \
 \"${SOURCE}\" \"${DESTINATION}\"" >> ${LOGFILE}
 
+#${TIME} ${RSYNC} \
+#--rsync-path="${RSYNC}" \
+#${DRY_RUN} \
+#--verbose \
+#--human-readable \
+#--stats \
+#--progress \
+#--recursive \
+#--relative \
+#--update \
+#--size-only \
+#--sparse \
+#--delete \
+#--delete-excluded \
+#--exclude-from="${EXCLUDE_FILE}" \
+#"${SOURCE}" "${DESTINATION}" 2>&1 | /usr/bin/tee -a "${LOGFILE}"
+
 ${TIME} ${RSYNC} \
 --rsync-path="${RSYNC}" \
 ${DRY_RUN} \
@@ -138,8 +155,6 @@ ${DRY_RUN} \
 --update \
 --size-only \
 --sparse \
---delete \
---delete-excluded \
 --exclude-from="${EXCLUDE_FILE}" \
 "${SOURCE}" "${DESTINATION}" 2>&1 | /usr/bin/tee -a "${LOGFILE}"
 
