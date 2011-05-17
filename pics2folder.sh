@@ -8,10 +8,16 @@ function getTimeStamp ()
 	if [[ "x"$date != "x" ]]; then
 		read YEAR MONTH DAY <<<${date}
 	else
-		echo "No exif data!"
-		YEAR=0000
-		MONTH=00
-		DAY=00
+		echo "No Exif.Image.DateTime; trying Exif.Photo.DateTimeDigitized"
+		date=$(exiv2 -q -Pv -g Exif.Photo.DateTimeDigitized "${1}" |awk '{print $1}'|tr ':' ' ')
+		if [[ "x"$date != "x" ]]; then
+			read YEAR MONTH DAY <<<${date}
+		else
+			echo "No exif data!"
+			YEAR=0000
+			MONTH=00
+			DAY=00
+		fi
 	fi
 }
 
