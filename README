@@ -16,12 +16,14 @@ Rename_and_Order.sh*		Rename and oerder files
 do-rsync.sh*			Wrapper for a rsync call
 move_and_rename.workflow/	Finder workflow
 move_pics_to_folders.sh*	move pics to folders
-pics2folder.sh*			mofe pictures from given source folder to destination
+pics2folder.sh*			move pictures from given source folder to destination
 				sorting into <year>/<year-month-day>/<yearmonthday>_<filename>
-rename_IMG_2_Date.sh*		rename img to have its exif-date in the name
-rename_mp3.sh*			rename mp3-files
+rename_IMG_2_Date.sh*		Rename img to have its exif-date in the name
+rename_mp3.sh*			Rename mp3-files
 rsync-command.txt*		txt to remember a rsync-command
-sync-fotos.sh*			sync fotos to folder
+sync-fotos.sh*			Sync fotos to a folder.
+				The script also builds thumbnails of the fotos.
+				It was originally intended to sync my pics to a online album.
 sync-xmp2jpg.sh*		If using lightroom to edit xmp information of a RAW-file
 				it's saved into a seperate file. The script syncs this info
 				to the corresponding jpg-file.
