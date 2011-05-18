@@ -1,0 +1,27 @@
+A collection of scripts I have written since the time I started using a digital camera.
+
+Source:		https://github.com/krid78/FotoScripts
+Documentation:	none, yet
+Wiki:		none, yet
+Bug tracker:	http://github.com/krid78/FotoScripts/issues
+
+Author:	Daniel Kriesten <krid@tu-chemnitz.eu>
+License:	GPLv2
+
+
+Files
+=====
+
+Rename_and_Order.sh*		Rename and oerder files
+do-rsync.sh*			Wrapper for a rsync call
+move_and_rename.workflow/	Finder workflow
+move_pics_to_folders.sh*	move pics to folders
+pics2folder.sh*			mofe pictures from given source folder to destination
+				sorting into <year>/<year-month-day>/<yearmonthday>_<filename>
+rename_IMG_2_Date.sh*		rename img to have its exif-date in the name
+rename_mp3.sh*			rename mp3-files
+rsync-command.txt*		txt to remember a rsync-command
+sync-fotos.sh*			sync fotos to folder
+sync-xmp2jpg.sh*		If using lightroom to edit xmp information of a RAW-file
+				it's saved into a seperate file. The script syncs this info
+				to the corresponding jpg-file.
