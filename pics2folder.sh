@@ -30,14 +30,15 @@ function copyPicsToFolder ()
 {
 	local i
 	local x
-	for i in $(find "${SRCBASE}" -iname "*.${1}"); do
+	#for i in $(find "${SRCBASE}" -iname "*.${1}"); do
+	find "${SRCBASE}" -iname "*.${1}"|while read i; do
 		getTimeStamp "${i}";
 		if [[ "x"${YEAR}${MONTH}${DAY} == "x00000000" ]]; then
 			echo "Skipping \"${i}\""
 			continue
 		fi
 		createFolder "${DSTBASE}"/${YEAR}/${YEAR}-${MONTH}-${DAY}
-		for x in ${i%.*}.*; do
+		for x in "${i%.*}".*; do
 			local FILENAME=$(basename "${x}")
 			local NAME=${FILENAME%.*}
 			local EXT=$(echo ${FILENAME##*.} |tr "[:upper:]" "[:lower:]")
