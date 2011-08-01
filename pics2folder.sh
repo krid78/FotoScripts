@@ -2,21 +2,34 @@
 ####################
 # sort pics to folder
 
+#set -x
+#MOVE=1
+#DATETIME=yes
+MOVE=
+DATETIME=
+
 function getTimeStamp ()
 {
 	local date=$(exiv2 -q -Pv -g Exif.Image.DateTime "${1}" |awk '{print $1}'|tr ':' ' ')
+	local ptime=$(exiv2 -q -Pv -g Exif.Image.DateTime "${1}" |awk '{print $2}'|tr ':' ' ')
 	if [[ "x"$date != "x" ]]; then
 		read YEAR MONTH DAY <<<${date}
+		read HOUR MINUTE SECOND <<<${ptime}
 	else
 		echo "No Exif.Image.DateTime; trying Exif.Photo.DateTimeDigitized"
 		date=$(exiv2 -q -Pv -g Exif.Photo.DateTimeDigitized "${1}" |awk '{print $1}'|tr ':' ' ')
+		ptime=$(exiv2 -q -Pv -g Exif.Image.DateTime "${1}" |awk '{print $2}'|tr ':' ' ')
 		if [[ "x"$date != "x" ]]; then
 			read YEAR MONTH DAY <<<${date}
+			read HOUR MINUTE SECOND <<<${ptime}
 		else
 			echo "No exif data!"
 			YEAR=0000
 			MONTH=00
 			DAY=00
+			HOUR=00
+			MINUTE=00
+			SECOND=00
 		fi
 	fi
 }
@@ -45,37 +58,26 @@ function copyPicsToFolder ()
 			if [[ ${EXT} != "jpg" ]]; then
 				EXT=${FILENAME##*.}
 			fi
-			if [[ -e "${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${NAME}.${EXT}" ]]; then
-				echo "** \"${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${NAME}.${EXT}\" existiert! **"
+			if [[ "x"${DATETIME} != "x" ]]; then
+				if [[ -e "${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${HOUR}${MINUTE}${SECOND}_${NAME}.${EXT}" ]]; then
+					echo "** \"${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${HOUR}${MINUTE}${SECOND}_${NAME}.${EXT}\" existiert! **"
+				else
+					if [[ "x"${MOVE} != "x" ]]; then
+						mv -iv "$x" "${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}"/${YEAR}${MONTH}${DAY}_${HOUR}${MINUTE}${SECOND}_"${NAME}.${EXT}"
+					else
+						cp -iv "$x" "${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}"/${YEAR}${MONTH}${DAY}_${HOUR}${MINUTE}${SECOND}_"${NAME}.${EXT}"
+					fi
+				fi
 			else
-				cp -iv "$x" "${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}"/${YEAR}${MONTH}${DAY}_"${NAME}.${EXT}"
-			fi
-		done
-	done
-}
-
-function movePicsToFolder ()
-{
-	local i
-	local x
-	for i in $(find "${SRCBASE}" -iname "*.${1}"); do
-		getTimeStamp "${i}";
-		if [[ "x"${YEAR}${MONTH}${DAY} == "x00000000" ]]; then
-			echo "Skipping \"${i}\""
-			continue
-		fi
-		createFolder "${DSTBASE}"/${YEAR}/${YEAR}-${MONTH}-${DAY}
-		for x in ${i%.*}.*; do
-			local FILENAME=$(basename "${x}")
-			local NAME=${FILENAME%.*}
-			local EXT=$(echo ${FILENAME##*.} |tr "[:upper:]" "[:lower:]")
-			if [[ ${EXT} != "jpg" ]]; then
-				EXT=${FILENAME##*.}
-			fi
-			if [[ -e "${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${NAME}.${EXT}" ]]; then
-				echo "** \"${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${NAME}.${EXT}\" existiert! **"
-			else
-				mv -iv "$x" "${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}"/${YEAR}${MONTH}${DAY}_"${NAME}.${EXT}"
+				if [[ -e "${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${NAME}.${EXT}" ]]; then
+					echo "** \"${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${NAME}.${EXT}\" existiert! **"
+				else
+					if [[ "x"${MOVE} != "x" ]]; then
+						mv -iv "$x" "${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}"/${YEAR}${MONTH}${DAY}_"${NAME}.${EXT}"
+					else
+						cp -iv "$x" "${DSTBASE}/${YEAR}/${YEAR}-${MONTH}-${DAY}"/${YEAR}${MONTH}${DAY}_"${NAME}.${EXT}"
+					fi
+				fi
 			fi
 		done
 	done
