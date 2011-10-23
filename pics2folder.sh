@@ -3,9 +3,9 @@
 # sort pics to folder
 
 #set -x
-#MOVE=1
+MOVE=1
 #DATETIME=yes
-MOVE=
+#MOVE=
 DATETIME=
 
 function getTimeStamp ()
