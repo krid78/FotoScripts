@@ -33,3 +33,4 @@ this line removes pictures which exist twice. One is named with date and
 time, the other one ist with date only. We want the one with date and
 time, the other one gets removed.
 for i in $(find 2011/2011-07* -name '*.jpg' ); do if [ -e ${i%%_*}_*_${i#*_} ] ; then echo -n "${i%%_*}_*_${i#*_} exists ... "; rm -vf ${i}; fi; done
+for i in $(find 2011/2011-07* -name '*.CR2' ); do if [ -e ${i%%_*}_*_${i#*_} ] ; then echo -n "${i%%_*}_*_${i#*_} exists ... "; rm -vf ${i}; fi; done
