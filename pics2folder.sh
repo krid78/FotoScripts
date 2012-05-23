@@ -64,18 +64,14 @@ function copyPicsToFolder ()
       if [[ ${EXT} != "jpg" ]]; then
         EXT=${FILENAME##*.}
       fi
-      if [[ "x"${DATETIME} != "x" ]]; then
-        if [[ -e "${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${HOUR}${MINUTE}${SECOND}_${NAME}.${EXT}" ]]; then
-          echo "** \"${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${HOUR}${MINUTE}${SECOND}_${NAME}.${EXT}\" existiert! **"
+      if [[ -e "${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${HOUR}${MINUTE}${SECOND}_${NAME}.${EXT}" || -e "${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${NAME}.${EXT}" ]]; then
+          echo "** \"${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}/<TIME_STAMP>_${NAME}.${EXT}\" existiert! **"
         else
-          ${CPCOMMAND} ${VOPT} "$x" "${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}"/${YEAR}${MONTH}${DAY}_${HOUR}${MINUTE}${SECOND}_"${NAME}.${EXT}"
-        fi
-      else
-        if [[ -e "${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${NAME}.${EXT}" ]]; then
-          echo "** \"${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${NAME}.${EXT}\" existiert! **"
-        else
-          ${CPCOMMAND} ${VOPT} "$x" "${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}"/${YEAR}${MONTH}${DAY}_"${NAME}.${EXT}"
-        fi
+          if [[ "x"${DATETIME} != "x" ]]; then
+            ${CPCOMMAND} ${VOPT} "$x" "${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}"/${YEAR}${MONTH}${DAY}_${HOUR}${MINUTE}${SECOND}_"${NAME}.${EXT}"
+          else
+            ${CPCOMMAND} ${VOPT} "$x" "${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}"/${YEAR}${MONTH}${DAY}_"${NAME}.${EXT}"
+          fi
       fi
     done
   done
@@ -83,7 +79,7 @@ function copyPicsToFolder ()
 
 #########################
 # initialize variables
-VERSION=0.9
+VERSION=0.9.1
 CPCOMMAND="cp -i"
 VOPT=
 getCleanDirPath SRCDIR "./"
@@ -101,7 +97,7 @@ Usage: $0 <options> \n\
 Options:\n\
   -s <dir>\t Source Directory (default: ${SRCDIR})\n\
   -d <dir>\t Destiantion Directory (default: ${DSTDIR})\n\
-  -e <ext>\t Extension for Files (default: ${BASEEXT}\n\
+  -e <ext>\t Extension for Files (default: ${BASEEXT})\n\
   -m \t\t Move files (default is to copy them) \n\
   -t \t\t Use date and time to name the files \n\
   -v \t\t Be verbose \n\
