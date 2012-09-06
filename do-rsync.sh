@@ -3,7 +3,7 @@
 # Author(s)     :  Daniel Kriesten
 # Email         :  daniel.kriesten@etit.tu-chemnitz.de
 # Creation Date :  Mi 04 Nov 2009 10:52:30 #u
-# Last Modified :  <So 20 Nov 2011 20:46:38 root>
+# Last Modified :  <Fr 29 Jun 2012 11:38:06 krid>
 #
 # do recursive rsync from $1 to $2 excluding $3 (and some defaults)
 ########################################################################
@@ -65,16 +65,19 @@ DESTINATION=${2:-"/Volumes/WD Passport"}
 EXCLUDE_FILE=`"${DATE}" +"/tmp/exclude_%y%m%d%H%M%S.rsync"`
 "${CAT}" > ${EXCLUDE_FILE} << "EOF"
 .Trash
-.Trashes
-.Spotlight-V100
+.Trashes/
+.Spotlight-V100/
+.fseventsd/
 .DS_Store
 ._.*
+._*
 .*.swp
 .picasa.ini
-iMovie Thumbnails
-iPod Photo Cache
-Scripts/*
+iMovie Thumbnails/
+iPod Photo Cache/
+Scripts/
 *.pyc
+.TEMP_com.apple.*/
 EOF
 # end exclude list -------------------------------------------------------------
 
