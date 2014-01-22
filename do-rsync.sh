@@ -3,7 +3,7 @@
 # Author(s)     :  Daniel Kriesten
 # Email         :  daniel.kriesten@etit.tu-chemnitz.de
 # Creation Date :  Mi 04 Nov 2009 10:52:30 #u
-# Last Modified :  <Fr 29 Jun 2012 11:38:06 krid>
+# Last Modified :  <Mi 22 Jan 2014 13:39:00 krid>
 #
 # do recursive rsync from $1 to $2 excluding $3 (and some defaults)
 ########################################################################
@@ -78,6 +78,8 @@ iPod Photo Cache/
 Scripts/
 *.pyc
 .TEMP_com.apple.*/
+Microsoft-Benutzerdaten/
+RDC Connections/
 EOF
 # end exclude list -------------------------------------------------------------
 
