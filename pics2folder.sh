@@ -33,7 +33,7 @@ function getTimeStamp ()
   pdatetime=($(sips --getProperty creation "${1}"))
   pdate=${pdatetime[2]}
   ptime=${pdatetime[3]}
-  if [[ $pdate = "<nil>" -a -x /usr/local/bin/exiv2 ]]; then
+  if [[ $pdate = "<nil>" && -x /usr/local/bin/exiv2 ]]; then
       DEBUG "Trying Exif.Photo.DateTimeOriginal"
       read pdate ptime <<<"$(exiv2 -q -Pv -g Exif.Photo.DateTimeOriginal "${1}")"
     if [[ "x"$pdate = "x" ]]; then
