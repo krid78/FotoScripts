@@ -26,17 +26,26 @@ function getCleanDirPath()
 
 function getTimeStamp ()
 {
-  DEBUG "Trying Exif.Photo.DateTimeDigitized"
+  local pdatetime
   local pdate
   local ptime
-  read pdate ptime <<<"$(exiv2 -q -Pv -g Exif.Photo.DateTimeDigitized "${1}")"
-  if [[ "x"$pdate = "x" ]]; then
-    DEBUG "No Exif.Photo.DateTimeDigitized; trying Exif.Photo.DateTimeOriginal"
-    read pdate ptime <<<"$(exiv2 -q -Pv -g Exif.Photo.DateTimeOriginal "${1}")"
-  fi
-  if [[ "x"$pdate = "x" ]]; then
-    DEBUG "No Exif.Photo.DateTimeOriginal; trying Exif.Image.DateTime;"
-    read pdate ptime <<<"$(exiv2 -q -Pv -g Exif.Image.DateTime "${1}")"
+  DEBUG "Trying sips getProperty creation"
+  pdatetime=($(sips --getProperty creation "${1}"))
+  pdate=${pdatetime[2]}
+  ptime=${pdatetime[3]}
+  if [[ $pdate = "<nil>" -a -x /usr/local/bin/exiv2 ]]; then
+      DEBUG "Trying Exif.Photo.DateTimeOriginal"
+      read pdate ptime <<<"$(exiv2 -q -Pv -g Exif.Photo.DateTimeOriginal "${1}")"
+    if [[ "x"$pdate = "x" ]]; then
+      DEBUG "No Exif.Photo.DateTimeOriginal; trying Exif.Photo.DateTimeDigitized"
+      read pdate ptime <<<"$(exiv2 -q -Pv -g Exif.Photo.DateTimeDigitized "${1}")"
+    fi
+    if [[ "x"$pdate = "x" ]]; then
+      DEBUG "No Exif.Photo.DateTimeOriginal; trying Exif.Image.DateTime;"
+      read pdate ptime <<<"$(exiv2 -q -Pv -g Exif.Image.DateTime "${1}")"
+    fi
+  else
+    DEBUG "Exiv tool not found!"
   fi
   if [[ "x"$pdate = "x" ]]; then
     echo "***** No exif data! *****"
@@ -44,6 +53,7 @@ function getTimeStamp ()
     pdate="0000:00:00"
     ptime="00:00:00"
   fi
+  DEBUG "SIPS Date: $pdate Time: $ptime"
   read YEAR MONTH DAY <<<$(echo ${pdate}|tr ':' ' ')
   read HOUR MINUTE SECOND <<<$(echo ${ptime}|tr ':' ' ')
 }
@@ -113,7 +123,7 @@ Options:\n\
   -v \t\t Be verbose \n\
   -h \t\t This Help \n"
 
-if [[ $# -lt 1 ]]; then 
+if [[ $# -lt 1 ]]; then
   echo -e $USAGE
   exit 0
 fi
