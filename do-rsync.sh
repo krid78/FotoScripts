@@ -3,7 +3,7 @@
 # Author(s)     :  Daniel Kriesten
 # Email         :  daniel.kriesten@etit.tu-chemnitz.de
 # Creation Date :  Mi 04 Nov 2009 10:52:30 #u
-# Last Modified :  <Mi 22 Jan 2014 13:39:00 krid>
+# Last Modified :  <Do 10 Jul 2014 16:37:44 krid>
 #
 # do recursive rsync from $1 to $2 excluding $3 (and some defaults)
 ########################################################################
@@ -76,6 +76,7 @@ EXCLUDE_FILE=`"${DATE}" +"/tmp/exclude_%y%m%d%H%M%S.rsync"`
 iMovie Thumbnails/
 iPod Photo Cache/
 Scripts/
+ToBeDeleted/*
 *.pyc
 .TEMP_com.apple.*/
 Microsoft-Benutzerdaten/
@@ -92,7 +93,7 @@ for o in $@; do
 		DRY_RUN=""
 		continue
 	else
-		if [ $(echo ${o} | ${GREP} -c "^-") -gt 0 ]; then 
+		if [ $(echo ${o} | ${GREP} -c "^-") -gt 0 ]; then
 			echo "WARNING: Ignored ${o} unknown argument." >> ${LOGFILE}
 		else
 			echo "HINT: Ignored nonoption: ${o}" >> ${LOGFILE}
