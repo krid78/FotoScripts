@@ -33,19 +33,18 @@ function getTimeStamp ()
   pdatetime=($(sips --getProperty creation "${1}"))
   pdate=${pdatetime[2]}
   ptime=${pdatetime[3]}
-  if [[ $pdate = "<nil>" && -x /usr/local/bin/exiv2 ]]; then
+  DEBUG "RESULT: pdate=$pdate and ptime=$ptime"
+  if [[ $pdate = "<nil>" && -x "${EXIVBIN}" ]]; then
       DEBUG "Trying Exif.Photo.DateTimeOriginal"
-      read pdate ptime <<<"$(exiv2 -q -Pv -g Exif.Photo.DateTimeOriginal "${1}")"
+      read pdate ptime <<<"$(${EXIVBIN} -q -Pv -g Exif.Photo.DateTimeOriginal "${1}")"
     if [[ "x"$pdate = "x" ]]; then
       DEBUG "No Exif.Photo.DateTimeOriginal; trying Exif.Photo.DateTimeDigitized"
-      read pdate ptime <<<"$(exiv2 -q -Pv -g Exif.Photo.DateTimeDigitized "${1}")"
+      read pdate ptime <<<"$(${EXIVBIN} -q -Pv -g Exif.Photo.DateTimeDigitized "${1}")"
     fi
     if [[ "x"$pdate = "x" ]]; then
       DEBUG "No Exif.Photo.DateTimeOriginal; trying Exif.Image.DateTime;"
-      read pdate ptime <<<"$(exiv2 -q -Pv -g Exif.Image.DateTime "${1}")"
+      read pdate ptime <<<"$(${EXIVBIN} -q -Pv -g Exif.Image.DateTime "${1}")"
     fi
-  else
-    DEBUG "Exiv tool not found!"
   fi
   if [[ "x"$pdate = "x" ]]; then
     echo "***** No exif data! *****"
@@ -82,8 +81,9 @@ function copyPicsToFolder ()
         EXT=${FILENAME##*.}
       fi
       if [[ -e "${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${HOUR}${MINUTE}${SECOND}_${NAME}.${EXT}" || -e "${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}/${YEAR}${MONTH}${DAY}_${NAME}.${EXT}" ]]; then
-          echo "** \"${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}/<TIME_STAMP>_${NAME}.${EXT}\" existiert! **"
+          DEBUG "\*\* \"${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}/<TIME_STAMP>_${NAME}.${EXT}\" existiert! \*\*"
         else
+          echo "Copy: ${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}"/${YEAR}${MONTH}${DAY}_${HOUR}${MINUTE}${SECOND}_"${NAME}.${EXT}"
           if [[ "x"${DATETIME} != "x" ]]; then
             ${ECHO} ${CPCOMMAND} ${VOPT} "$x" "${DSTDIR}/${YEAR}/${YEAR}-${MONTH}-${DAY}"/${YEAR}${MONTH}${DAY}_${HOUR}${MINUTE}${SECOND}_"${NAME}.${EXT}"
           else
@@ -99,6 +99,7 @@ function copyPicsToFolder ()
 VERSION=0.9.1
 ECHO=
 CPCOMMAND="cp -i"
+EXIVBIN=/usr/local/bin/exiv2
 VOPT=
 getCleanDirPath SRCDIR "./"
 DSTDIR="${HOME}/Pictures"
