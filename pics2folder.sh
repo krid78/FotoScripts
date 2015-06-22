@@ -31,10 +31,10 @@ function getTimeStamp ()
   local ptime
   DEBUG "Trying sips getProperty creation"
   pdatetime=($(sips --getProperty creation "${1}"))
-  pdate=${pdatetime[2]}
-  ptime=${pdatetime[3]}
+  pdate=${pdatetime[${#pdatetime[@]} - 2]}
+  ptime=${pdatetime[${#pdatetime[@]} - 1]}
   DEBUG "RESULT: pdate=$pdate and ptime=$ptime"
-  if [[ $pdate = "<nil>" && -x "${EXIVBIN}" ]]; then
+  if [[ ($pdate = "<nil>" || $ptime = "<nil>") && -x "${EXIVBIN}" ]]; then
       DEBUG "Trying Exif.Photo.DateTimeOriginal"
       read pdate ptime <<<"$(${EXIVBIN} -q -Pv -g Exif.Photo.DateTimeOriginal "${1}")"
     if [[ "x"$pdate = "x" ]]; then
