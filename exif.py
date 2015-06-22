@@ -8,31 +8,31 @@ Change EXIF data with Python under Mac OS X using the Cocoa bindings
 
 """
 
-import Quartz
-from Quartz import *
+import Quartz as Q
 import CoreFoundation as CF
 import os, sys
 
 filename = os.path.abspath(sys.argv[1])
 url = CF.CFURLCreateFromFileSystemRepresentation(None, filename, len(filename), False)
 
-img_src = Quartz.ImageIO.CGImageSourceCreateWithURL(url, {})
-properties = Quartz.ImageIO.CGImageSourceCopyPropertiesAtIndex(img_src, 0, None)
-exif = properties[Quartz.ImageIO.kCGImagePropertyExifDictionary]
+img_src = Q.CGImageSourceCreateWithURL(url, {})
+properties = Q.CGImageSourceCopyPropertiesAtIndex(img_src, 0, None)
+
+print properties
+
+# try some dicts
+exif = properties[Q.kCGImagePropertyExifDictionary]
 
 if exif:
+    print "==== Exif ===="
     print exif
 
-gps = properties[Quartz.ImageIO.kCGImagePropertyGpsDictionary]
+#img_dest = Q.CGImageDestinationCreateWithURL(url, 'public.jpeg', 1, None)
 
-if gps:
-    print gps
-#img_dest = Quartz.ImageIO.CGImageDestinationCreateWithURL(url, 'public.jpeg', 1, None)
+#exif[Q.kCGImagePropertyExifDateTimeOriginal] = u'2009:06:17 21:03:18'
 
-#exif[Quartz.ImageIO.kCGImagePropertyExifDateTimeOriginal] = u'2009:06:17 21:03:18'
-
-#Quartz.ImageIO.CGImageDestinationAddImageFromSource(\
+#Q.CGImageDestinationAddImageFromSource(\
 #                                                      img_dest, img_src, 0,
-#                                                    {Quartz.ImageIO.kCGImagePropertyExifDictionary: exif})
+#                                                    {Q.kCGImagePropertyExifDictionary: exif})
 
-#Quartz.ImageIO.CGImageDestinationFinalize(img_dest)
+#Q.CGImageDestinationFinalize(img_dest)
