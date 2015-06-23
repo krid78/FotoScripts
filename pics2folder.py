@@ -112,7 +112,8 @@ class MyImage(object):
             except KeyError:
                 pass
 
-        __logger__.warning("%s: No Date and Time", self._src_filename)
+        __logger__.warning("%s: No Date and Time (ctime: %s)", self._src_filename, dt.datetime.fromtimestamp(
+            os.path.getctime(self._src_filename)).strftime("%Y:%m:%d %H:%M:%S"))
         __logger__.info("==== properties ====\n%s", properties)
 
         return u"0000:00:00 00:00:00"
@@ -192,7 +193,7 @@ def main():
                         default=False,
                         action="count",
                         help=u"be verbose, repeat to increase level")
-    parser.add_argument("-s", "--src_dir",
+    parser.add_argument("-s", "--src",
                         default=__DEFAULT_SOURCE__,
                         help="Source directory (default: "+__DEFAULT_SOURCE__+")")
     parser.add_argument("-d", "--dst_dir",
@@ -230,18 +231,20 @@ def main():
         __logger__.error("%s is not a directory", dst_dir)
         return
 
-    src_dir = os.path.abspath(os.path.expanduser(options.src_dir))
-    if not os.path.isdir(src_dir):
-        __logger__.error("%s is not a directory", src_dir)
+    src = os.path.abspath(os.path.expanduser(options.src))
+    if not os.path.isdir(src):
+        __logger__.info("directly working on %s", src)
+        myimg = MyImage(src, dst_dir, options.pretend, options.move, options.with_time)
+        myimg.copy_or_move()
         return
 
-    logger.info("src_dir: %s", src_dir)
-    logger.info("dst_dir: %s", dst_dir)
+    logger.info("src dir: %s", src)
+    logger.info("dst dir: %s", dst_dir)
     logger.info("Extensions: %s", options.extensions)
 
     handle_count = 0
-    # walk all levels of src_dir
-    for root, dirs, files in os.walk(src_dir):
+    # walk all levels of src
+    for root, dirs, files in os.walk(src):
         for afile in files:
             if afile.endswith(tuple(options.extensions)):
                 logger.debug("Hit: %s", root+os.path.sep+afile)
