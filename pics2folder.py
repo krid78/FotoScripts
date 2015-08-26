@@ -246,7 +246,9 @@ def main():
     # walk all levels of src
     for root, dirs, files in os.walk(src):
         for afile in files:
-            if afile.endswith(tuple(options.extensions)):
+            if os.path.basename(afile).startswith('._'):
+                logger.info("Ignoring metadata file %s", os.path.basename(afile))
+            elif afile.endswith(tuple(options.extensions)):
                 logger.debug("Hit: %s", root+os.path.sep+afile)
                 myimg = MyImage(root+os.path.sep+afile, dst_dir, options.pretend, options.move, options.with_time)
                 myimg.copy_or_move()
