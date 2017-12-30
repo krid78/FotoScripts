@@ -3,7 +3,7 @@
 # Author(s)     :  Daniel Kriesten
 # Email         :  daniel.kriesten@etit.tu-chemnitz.de
 # Creation Date :  Mi 04 Nov 2009 10:52:30 #u
-# Last Modified :  <Do 10 Jul 2014 16:37:44 krid>
+# Last Modified :  Mi 26 Jul 2017 13:08:22 krid
 #
 # do recursive rsync from $1 to $2 excluding $3 (and some defaults)
 ########################################################################
@@ -81,6 +81,7 @@ ToBeDeleted/*
 .TEMP_com.apple.*/
 Microsoft-Benutzerdaten/
 RDC Connections/
+.SynologyWorkingDirectory/
 EOF
 # end exclude list -------------------------------------------------------------
 
