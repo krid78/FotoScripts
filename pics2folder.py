@@ -22,13 +22,13 @@ import sys
 import os
 import shutil
 import logging
-__logger__ = logging.getLogger(__name__)
 import logging.handlers
 import argparse
 import datetime as dt
 import Quartz as Q
 import CoreFoundation as CF
 
+__logger__ = logging.getLogger(__name__)
 __DEFAULT_SOURCE__ = "~/Pictures/Fotos-Mediathek.photoslibrary/Masters"
 __DEFAULT_DESTINATION__ = "/Volumes/photo"
 
@@ -195,11 +195,12 @@ def main():
                         help=u"be verbose, repeat to increase level")
     parser.add_argument("-s", "--src",
                         default=__DEFAULT_SOURCE__,
-                        help="Source directory (default: "+__DEFAULT_SOURCE__+")")
+                        help="Source directory (default: %(default)s)")
     parser.add_argument("-d", "--dst_dir",
                         default=__DEFAULT_DESTINATION__,
-                        help="Destination directory (default: "+__DEFAULT_DESTINATION__+")")
-    parser.add_argument("-e", "--extensions", default=["JPG"], nargs='+', help="Search for these extension")
+                        help="Destination directory (default: %(default)s)")
+    parser.add_argument("-e", "--extensions", default=["JPG"], nargs='+',
+                        help="Search for these extension (default: %(default)s)")
     parser.add_argument("-t", "--with-time", action="store_true", default=False, help="use time in filenames as well")
     parser.add_argument("-p", "--pretend", action="store_true", default=False, help="Only print what to do")
     parser.add_argument("-m", "--move", action="store_true", default=False, help="Move the files")
